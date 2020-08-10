@@ -6,7 +6,7 @@ This is currently a first pass of the checks - still a work in progress.
 
 User needs to put in username, password, and csv_file_path of records that need to be scored. Additionally, the granule data format
 csv needs to be in the same directory as this script. The csv witht he records listed needs to have a column called 'Concept_id' 
-and a column called 'Revision_id'.
+and a column called 'Revision_id'. Chrome webdriver also needs to be in the same directory as this script.
 
 """
 def metadata_scoring2(user_name, pass_word, csv_file_path):
