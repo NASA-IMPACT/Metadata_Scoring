@@ -80,33 +80,44 @@ def metadata_scoring2(user_name, pass_word, csv_file_path):
         else:
             score+=0
             
-        # DATA ACCESSIBILITY CHECKS
-        # unsure if these lists are complete
-        subtypes1 = ['WEB MAP SERVICE (WMS)', 'WEB COVERAGE SERVICE (WCS)', 'OPENDAP DATA', 'GIOVANNI', 'THREDDS DATA', 'WORLDVIEW']
-        subtypes2 = ['WEB MAP SERVICE (WMS)', 'WEB COVERAGE SERVICE (WCS)', 'OPENDAP DATA']
+    # DATA ACCESSIBILITY CHECKS
+    # unsure if these lists are complete
+    subtypes1 = ['WEB MAP SERVICE (WMS)', 'WEB COVERAGE SERVICE (WCS)', 'OPENDAP DATA', 'GIOVANNI', 'THREDDS DATA', 'WORLDVIEW']
+    subtypes2 = ['WEB MAP SERVICE (WMS)', 'WEB COVERAGE SERVICE (WCS)', 'OPENDAP DATA']
+    
+    if 'RelatedUrls' in data:
+        related_urls = data['RelatedUrls']
         # check to see if at least one link has the type 'GET DATA'
-        if 'RelatedUrls' in data:
-            related_urls = data['RelatedUrls']
-            for url in related_urls:
-                if url['Type']=='GET DATA':
-                    score+=1 # if there's more than one 'GET DATA' link it will add more than one to the score
+        for url in related_urls:
+            if url['Type']=='GET DATA':
+                score+=1 
+                break
+            else:
+                score+=0
+        # This is actually a data usability check
+        # check to see if at least one link has the type 'VIEW RELATED INFORMATION'
+        for url in related_urls:
+            if url['Type']=='VIEW RELATED INFORMATION':
+                score+=1 
+                break
+            else:
+                score+=0
+        # check to see if at least one url has a subtype in the subtypes1 list
+        for url in related_urls:
+            if 'Subtype' in url:
+                if url['Subtype'] in subtypes1:
+                    score+=1 
+                    break
                 else:
                     score+=0
-                # This is actually a data usability check
-                if url['Type']=='VIEW RELATED INFORMATION':
-                    score+=1 # if there's more than one 'VIEW RELATED INFO' link it will add more than one to the score
+        # check to see if at least one url has a subtype in the subtypes2 list
+        for url in related_urls:
+            if 'Subtype' in url:
+                if url['Subtype'] in subtypes2:
+                    score+=1 
                 else:
                     score+=0
-                if 'Subtype' in url:
-                    if url['Subtype'] in subtypes1:
-                        score+=1 # if there's more than one subtype match, it will add more than one to the score
-                    else:
-                        score+=0
-                    if url['Subtype'] in subtypes2:
-                        score+=1 #if there's more than one subtype match, it will add more than one to the score
-                    else:
-                        score+=0
-        
+            
         # DATA USABILITY CHECKS  
         # check to see if version field is populated
         if 'Version' in data:
