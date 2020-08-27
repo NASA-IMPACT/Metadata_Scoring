@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
 Metadata Scoring Approach 2
 ----------------------------
@@ -80,94 +81,94 @@ def metadata_scoring2(user_name, pass_word, csv_file_path):
         else:
             score+=0
             
-    # DATA ACCESSIBILITY CHECKS
-    # unsure if these lists are complete
-    subtypes1 = ['WEB MAP SERVICE (WMS)', 'WEB COVERAGE SERVICE (WCS)', 'OPENDAP DATA', 'GIOVANNI', 'THREDDS DATA', 'WORLDVIEW']
-    subtypes2 = ['WEB MAP SERVICE (WMS)', 'WEB COVERAGE SERVICE (WCS)', 'OPENDAP DATA']
-    
-    if 'RelatedUrls' in data:
-        related_urls = data['RelatedUrls']
-        # check to see if at least one link has the type 'GET DATA'
-        for url in related_urls:
-            if url['Type']=='GET DATA':
-                score+=1 
-                break
-            else:
-                score+=0
-        # This is actually a data usability check
-        # check to see if at least one link has the type 'VIEW RELATED INFORMATION'
-        for url in related_urls:
-            if url['Type']=='VIEW RELATED INFORMATION':
-                score+=1 
-                break
-            else:
-                score+=0
-        # check to see if at least one url has a subtype in the subtypes1 list
-        for url in related_urls:
-            if 'Subtype' in url:
-                if url['Subtype'] in subtypes1:
+        # DATA ACCESSIBILITY CHECKS
+        # unsure if these lists are complete
+        subtypes1 = ['WEB MAP SERVICE (WMS)', 'WEB COVERAGE SERVICE (WCS)', 'OPENDAP DATA', 'GIOVANNI', 'THREDDS DATA', 'WORLDVIEW']
+        subtypes2 = ['WEB MAP SERVICE (WMS)', 'WEB COVERAGE SERVICE (WCS)', 'OPENDAP DATA']
+        
+        if 'RelatedUrls' in data:
+            related_urls = data['RelatedUrls']
+            # check to see if at least one link has the type 'GET DATA'
+            for url in related_urls:
+                if url['Type']=='GET DATA':
                     score+=1 
                     break
                 else:
                     score+=0
-        # check to see if at least one url has a subtype in the subtypes2 list
-        for url in related_urls:
-            if 'Subtype' in url:
-                if url['Subtype'] in subtypes2:
+            # This is actually a data usability check
+            # check to see if at least one link has the type 'VIEW RELATED INFORMATION'
+            for url in related_urls:
+                if url['Type']=='VIEW RELATED INFORMATION':
                     score+=1 
+                    break
                 else:
                     score+=0
-            
-        # DATA USABILITY CHECKS  
-        # check to see if version field is populated
-        if 'Version' in data:
-            score+=1
-        else:
-            score+=0
-        
-        # check to see if quality field is populated    
-        if 'Quality' in data:
-            score+=1
-        else:
-            score+=0
-        
-        #Check to see if collection progress field meets criteria - should any other things be included?
-        if data['CollectionProgress'] == 'PLANNED':
-            score+=1
-        elif data['CollectionProgress'] == 'IN WORK':
-            score+=1
-        elif data['CollectionProgress'] == 'ACTIVE':
-            score+=1
-        elif data['CollectionProgress'] == 'COMPLETE':
-            score+=1
-        else:
-            score+=0
-            
-        # Check to see if data format info is provided and whether it matches the accepted formats
-        if 'ArchiveAndDistributionInformation' in data:
-            score+=1
-            data_format = data['ArchiveAndDistributionInformation']['FileDistributionInformation'][0]['Format']
-            if data_format in Data_Formats:
-                score += 1
-            else: 
+            # check to see if at least one url has a subtype in the subtypes1 list
+            for url in related_urls:
+                if 'Subtype' in url:
+                    if url['Subtype'] in subtypes1:
+                        score+=1 
+                        break
+                    else:
+                        score+=0
+            # check to see if at least one url has a subtype in the subtypes2 list
+            for url in related_urls:
+                if 'Subtype' in url:
+                    if url['Subtype'] in subtypes2:
+                        score+=1 
+                    else:
+                        score+=0
+                
+            # DATA USABILITY CHECKS  
+            # check to see if version field is populated
+            if 'Version' in data:
+                score+=1
+            else:
                 score+=0
-        else:
-            score+=0
+            
+            # check to see if quality field is populated    
+            if 'Quality' in data:
+                score+=1
+            else:
+                score+=0
+            
+            #Check to see if collection progress field meets criteria - should any other things be included?
+            if data['CollectionProgress'] == 'PLANNED':
+                score+=1
+            elif data['CollectionProgress'] == 'IN WORK':
+                score+=1
+            elif data['CollectionProgress'] == 'ACTIVE':
+                score+=1
+            elif data['CollectionProgress'] == 'COMPLETE':
+                score+=1
+            else:
+                score+=0
+                
+            # Check to see if data format info is provided and whether it matches the accepted formats
+            if 'ArchiveAndDistributionInformation' in data:
+                score+=1
+                data_format = data['ArchiveAndDistributionInformation']['FileDistributionInformation'][0]['Format']
+                if data_format in Data_Formats:
+                    score += 1
+                else: 
+                    score+=0
+            else:
+                score+=0
+            
+            # check to see if spatial information is provided
+            if 'SpatialExtent' in data:
+                score+=1
+            else:
+                score+=0
+            
+            # check to see if temporal information is provided
+            if 'TemporalExtents' in data:
+                score+=1
+            else:
+                score+=0
         
-        # check to see if spatial information is provided
-        if 'SpatialExtent' in data:
-            score+=1
-        else:
-            score+=0
-        
-        # check to see if temporal information is provided
-        if 'TemporalExtents' in data:
-            score+=1
-        else:
-            score+=0
-    
-        automatic_score.append(score)
-        print('Score:', score)
+            automatic_score.append(score)
+            print("Automatic score:", score)
     
     # Dashboard Manual Checks
            
@@ -604,7 +605,7 @@ def metadata_scoring2(user_name, pass_word, csv_file_path):
                             score += 0
                         else:
                             score+=1
-                    print(score)
+                    print("Manual score:", score)
                     manual_score.append(score)
      
     # adding automatic score and manual score together               
